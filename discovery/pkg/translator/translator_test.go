@@ -44,7 +44,7 @@ func TestBuildKubernetesDNSLabel(t *testing.T) {
 				"service1service1service1service1service1service1service1service1service1service1service1service1service1",
 				"cluster1cluster1cluster1cluster1cluster1cluster1cluster1cluster1",
 			},
-			expected: "4ce97d89bfa193a277ddd97df3cad58484b30bb4bc4b815ea71c84518d9a830",
+			expected: "h4ce97d89bfa193a277ddd97df3cad58484b30bb4bc4b815ea71c84518d9a83",
 		},
 		{
 			name:       "uppercase characters in one of the components",
@@ -59,7 +59,7 @@ func TestBuildKubernetesDNSLabel(t *testing.T) {
 		{
 			name:       "one long component",
 			components: []string{"service1service1service1service1service1service1service1service1service1service1service1service1service1"},
-			expected:   "bbaff9d26694ea6a881ebd3daf025e0daf0921f7398789053aeef0ac39be935",
+			expected:   "hbbaff9d26694ea6a881ebd3daf025e0daf0921f7398789053aeef0ac39be93",
 		},
 	}
 

@@ -93,7 +93,9 @@ func hashname(l int, s ...string) string {
 	}
 	// truncated everything, but we're still too long
 	// just return the hash truncated to l.
-	return hash[:min(len(hash), l)]
+	// prepend the hash with a well-known character to avoid returning a hash
+	// value that starts with a number.
+	return "h" + hash[:min(len(hash), l-1)]
 }
 
 // shorten shortens s to l length by replacing the

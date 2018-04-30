@@ -25,6 +25,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+const namePrefix = "os"
+
 // returns a kubernetes service for each load balancer in the slice
 func kubeServices(clusterName, tenantName string, lbs []loadbalancers.LoadBalancer) []v1.Service {
 	var svcs []v1.Service
@@ -32,7 +34,7 @@ func kubeServices(clusterName, tenantName string, lbs []loadbalancers.LoadBalanc
 		svc := v1.Service{
 			ObjectMeta: metav1.ObjectMeta{
 				Namespace: tenantName,
-				Name:      translator.BuildKubernetesDNSLabel(serviceName(lb), clusterName),
+				Name:      translator.BuildKubernetesDNSLabel(namePrefix, serviceName(lb), clusterName),
 				Labels:    translator.AddGimbalLabels(clusterName, tenantName, serviceName(lb), loadbalancerLabels(lb)),
 			},
 			Spec: v1.ServiceSpec{
@@ -55,7 +57,7 @@ func kubeEndpoints(clusterName, tenantName string, lbs []loadbalancers.LoadBalan
 		ep := v1.Endpoints{
 			ObjectMeta: metav1.ObjectMeta{
 				Namespace: tenantName,
-				Name:      translator.BuildKubernetesDNSLabel(serviceName(lb), clusterName),
+				Name:      translator.BuildKubernetesDNSLabel(namePrefix, serviceName(lb), clusterName),
 				Labels:    translator.AddGimbalLabels(clusterName, tenantName, serviceName(lb), loadbalancerLabels(lb)),
 			},
 		}
@@ -125,8 +127,7 @@ func servicePort(listener *listeners.Listener) v1.ServicePort {
 func portName(listener *listeners.Listener) string {
 	p := strconv.Itoa(listener.ProtocolPort)
 	if listener.Name == "" {
-		return "unnamed-" + p // TODO: port names must have at least 1 char. Is there something better we can do here?
+		return translator.BuildKubernetesDNSLabel(namePrefix, p)
 	}
-	// port names must be kubernetes DNS_LABELs
-	return translator.BuildKubernetesDNSLabel(listener.Name, p)
+	return translator.BuildKubernetesDNSLabel(namePrefix, listener.Name, p)
 }

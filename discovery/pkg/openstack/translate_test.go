@@ -41,7 +41,7 @@ func TestKubeServices(t *testing.T) {
 				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", ""),
 			},
 			expected: []v1.Service{
-				service("finance", "5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				service("finance", "os-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -58,7 +58,7 @@ func TestKubeServices(t *testing.T) {
 				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", "stocks"),
 			},
 			expected: []v1.Service{
-				service("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				service("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -75,7 +75,7 @@ func TestKubeServices(t *testing.T) {
 				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", "STOCKS"),
 			},
 			expected: []v1.Service{
-				service("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				service("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "STOCKS-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -92,7 +92,7 @@ func TestKubeServices(t *testing.T) {
 				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", "H8O5dRuRZlLfzjOC4a6spBTnsNUmGGlVNCerKkeeK4w5qjgaDVa9ogLKBPJX539p"),
 			},
 			expected: []v1.Service{
-				service("finance", "h8o5drurzllfzjoc4a6spbtn-9f88a4-us-east",
+				service("finance", "os-h8o5drurzllfzj-5de403-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "H8O5dRuRZlLfzjOC4a6spBTnsNUmGGlVNCerKkeeK4w5qjgaDVa9ogLKBPJX539p-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -109,7 +109,7 @@ func TestKubeServices(t *testing.T) {
 				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", "stocks", listener("ls-1", "http", "tcp", "pool-1", 80)),
 			},
 			expected: []v1.Service{
-				service("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				service("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -117,7 +117,30 @@ func TestKubeServices(t *testing.T) {
 						"gimbal.heptio.com/load-balancer-name": "stocks"},
 					[]v1.ServicePort{
 						{
-							Name:     "http-80",
+							Name:     "os-http-80",
+							Port:     80,
+							Protocol: v1.ProtocolTCP,
+						},
+					}),
+			},
+		},
+		{
+			name:        "named lb, unnamed listener",
+			clusterName: "us-east",
+			tenantName:  "finance",
+			lbs: []loadbalancers.LoadBalancer{
+				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", "stocks", listener("ls-1", "", "tcp", "pool-1", 80)),
+			},
+			expected: []v1.Service{
+				service("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+					map[string]string{
+						"gimbal.heptio.com/cluster":            "us-east",
+						"gimbal.heptio.com/service":            "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
+						"gimbal.heptio.com/load-balancer-id":   "5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
+						"gimbal.heptio.com/load-balancer-name": "stocks"},
+					[]v1.ServicePort{
+						{
+							Name:     "os-80",
 							Port:     80,
 							Protocol: v1.ProtocolTCP,
 						},
@@ -132,7 +155,7 @@ func TestKubeServices(t *testing.T) {
 				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", "stocks", listener("ls-1", "HTTP", "tcp", "pool-1", 80)),
 			},
 			expected: []v1.Service{
-				service("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				service("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -140,7 +163,7 @@ func TestKubeServices(t *testing.T) {
 						"gimbal.heptio.com/load-balancer-name": "stocks"},
 					[]v1.ServicePort{
 						{
-							Name:     "http-80",
+							Name:     "os-http-80",
 							Port:     80,
 							Protocol: v1.ProtocolTCP,
 						},
@@ -155,7 +178,7 @@ func TestKubeServices(t *testing.T) {
 				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", "stocks", listener("ls-1", "H8O5dRuRZlLfzjOC4a6spBTnsNUmGGlVNCerKkeeK4w5qjgaDVa9ogLKBPJX539p", "tcp", "pool-1", 80)),
 			},
 			expected: []v1.Service{
-				service("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				service("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -163,7 +186,7 @@ func TestKubeServices(t *testing.T) {
 						"gimbal.heptio.com/load-balancer-name": "stocks"},
 					[]v1.ServicePort{
 						{
-							Name:     "h8o5drurzllfzjoc4a6spbtn-9c4814-80",
+							Name:     "os-h8o5drurzllfzj-346b02-80",
 							Port:     80,
 							Protocol: v1.ProtocolTCP,
 						},
@@ -178,7 +201,7 @@ func TestKubeServices(t *testing.T) {
 				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", "stocks", listener("ls-1", "http", "tcp", "pool-1", 80), listener("ls-1", "https", "tcp", "pool-1", 443)),
 			},
 			expected: []v1.Service{
-				service("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				service("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -186,12 +209,12 @@ func TestKubeServices(t *testing.T) {
 						"gimbal.heptio.com/load-balancer-name": "stocks"},
 					[]v1.ServicePort{
 						{
-							Name:     "http-80",
+							Name:     "os-http-80",
 							Port:     80,
 							Protocol: v1.ProtocolTCP,
 						},
 						{
-							Name:     "https-443",
+							Name:     "os-https-443",
 							Port:     443,
 							Protocol: v1.ProtocolTCP,
 						},
@@ -206,7 +229,7 @@ func TestKubeServices(t *testing.T) {
 				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", "", listener("ls-1", "http", "tcp", "pool-1", 80), listener("ls-1", "https", "tcp", "pool-1", 443)),
 			},
 			expected: []v1.Service{
-				service("finance", "5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				service("finance", "os-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -214,12 +237,12 @@ func TestKubeServices(t *testing.T) {
 						"gimbal.heptio.com/load-balancer-name": ""},
 					[]v1.ServicePort{
 						{
-							Name:     "http-80",
+							Name:     "os-http-80",
 							Port:     80,
 							Protocol: v1.ProtocolTCP,
 						},
 						{
-							Name:     "https-443",
+							Name:     "os-https-443",
 							Port:     443,
 							Protocol: v1.ProtocolTCP,
 						},
@@ -257,7 +280,7 @@ func TestKubeEndpoints(t *testing.T) {
 				pool("pool-1", "HTTP", "5a5c3d9e-e679-43ec-b9fc-9bc51132541e", poolmember("10.0.0.1", 8080)),
 			},
 			expected: []v1.Endpoints{
-				endpoints("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				endpoints("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -277,7 +300,7 @@ func TestKubeEndpoints(t *testing.T) {
 				pool("pool-1", "HTTP", "5a5c3d9e-e679-43ec-b9fc-9bc51132541e", poolmember("10.0.0.1", 8080)),
 			},
 			expected: []v1.Endpoints{
-				endpoints("finance", "h8o5drurzllfzjoc4a6spbtn-9f88a4-us-east",
+				endpoints("finance", "os-h8o5drurzllfzj-5de403-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "H8O5dRuRZlLfzjOC4a6spBTnsNUmGGlVNCerKkeeK4w5qjgaDVa9ogLKBPJX539p-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -293,11 +316,8 @@ func TestKubeEndpoints(t *testing.T) {
 			lbs: []loadbalancers.LoadBalancer{
 				loadbalancer("5a5c3d9e-e679-43ec-b9fc-9bc51132541e", "STOCKS"),
 			},
-			pools: []pools.Pool{
-				pool("pool-1", "HTTP", "5a5c3d9e-e679-43ec-b9fc-9bc51132541e", poolmember("10.0.0.1", 8080)),
-			},
 			expected: []v1.Endpoints{
-				endpoints("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				endpoints("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "STOCKS-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -317,7 +337,7 @@ func TestKubeEndpoints(t *testing.T) {
 				pool("pool-1", "HTTP", "5a5c3d9e-e679-43ec-b9fc-9bc51132541e", poolmember("10.0.0.1", 8080)),
 			},
 			expected: []v1.Endpoints{
-				endpoints("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				endpoints("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -326,7 +346,7 @@ func TestKubeEndpoints(t *testing.T) {
 					[]v1.EndpointSubset{
 						{
 							Addresses: []v1.EndpointAddress{{IP: "10.0.0.1"}},
-							Ports:     []v1.EndpointPort{{Name: "http-80", Port: 8080, Protocol: v1.ProtocolTCP}},
+							Ports:     []v1.EndpointPort{{Name: "os-http-80", Port: 8080, Protocol: v1.ProtocolTCP}},
 						},
 					}),
 			},
@@ -342,7 +362,7 @@ func TestKubeEndpoints(t *testing.T) {
 				pool("pool-1", "HTTP", "5a5c3d9e-e679-43ec-b9fc-9bc51132541e", poolmember("10.0.0.1", 8080)),
 			},
 			expected: []v1.Endpoints{
-				endpoints("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				endpoints("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -351,7 +371,7 @@ func TestKubeEndpoints(t *testing.T) {
 					[]v1.EndpointSubset{
 						{
 							Addresses: []v1.EndpointAddress{{IP: "10.0.0.1"}},
-							Ports:     []v1.EndpointPort{{Name: "h8o5drurzllfzjoc4a6spbtn-9c4814-80", Port: 8080, Protocol: v1.ProtocolTCP}},
+							Ports:     []v1.EndpointPort{{Name: "os-h8o5drurzllfzj-346b02-80", Port: 8080, Protocol: v1.ProtocolTCP}},
 						},
 					}),
 			},
@@ -367,7 +387,7 @@ func TestKubeEndpoints(t *testing.T) {
 				pool("pool-1", "HTTP", "5a5c3d9e-e679-43ec-b9fc-9bc51132541e", poolmember("10.0.0.1", 8080)),
 			},
 			expected: []v1.Endpoints{
-				endpoints("finance", "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
+				endpoints("finance", "os-stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "stocks-5a5c3d9e-e679-43ec-b9fc-9bc51132541e",
@@ -376,7 +396,7 @@ func TestKubeEndpoints(t *testing.T) {
 					[]v1.EndpointSubset{
 						{
 							Addresses: []v1.EndpointAddress{{IP: "10.0.0.1"}},
-							Ports:     []v1.EndpointPort{{Name: "http-80", Port: 8080, Protocol: v1.ProtocolTCP}},
+							Ports:     []v1.EndpointPort{{Name: "os-http-80", Port: 8080, Protocol: v1.ProtocolTCP}},
 						},
 					}),
 			},
@@ -393,7 +413,7 @@ func TestKubeEndpoints(t *testing.T) {
 				pool("pool-2", "HTTP", "loadbalancer-1", poolmember("10.0.0.5", 443), poolmember("10.0.0.6", 443), poolmember("10.0.0.7", 8443)),
 			},
 			expected: []v1.Endpoints{
-				endpoints("finance", "stocks-loadbalancer-1-us-east",
+				endpoints("finance", "os-stocks-loadbalancer-1-us-east",
 					map[string]string{
 						"gimbal.heptio.com/cluster":            "us-east",
 						"gimbal.heptio.com/service":            "stocks-loadbalancer-1",
@@ -402,19 +422,19 @@ func TestKubeEndpoints(t *testing.T) {
 					[]v1.EndpointSubset{
 						{
 							Addresses: []v1.EndpointAddress{{IP: "10.0.0.1"}, {IP: "10.0.0.4"}},
-							Ports:     []v1.EndpointPort{{Name: "http-80", Port: 8080, Protocol: v1.ProtocolTCP}},
+							Ports:     []v1.EndpointPort{{Name: "os-http-80", Port: 8080, Protocol: v1.ProtocolTCP}},
 						},
 						{
 							Addresses: []v1.EndpointAddress{{IP: "10.0.0.2"}, {IP: "10.0.0.3"}},
-							Ports:     []v1.EndpointPort{{Name: "http-80", Port: 80, Protocol: v1.ProtocolTCP}},
+							Ports:     []v1.EndpointPort{{Name: "os-http-80", Port: 80, Protocol: v1.ProtocolTCP}},
 						},
 						{
 							Addresses: []v1.EndpointAddress{{IP: "10.0.0.5"}, {IP: "10.0.0.6"}},
-							Ports:     []v1.EndpointPort{{Name: "https-443", Port: 443, Protocol: v1.ProtocolTCP}},
+							Ports:     []v1.EndpointPort{{Name: "os-https-443", Port: 443, Protocol: v1.ProtocolTCP}},
 						},
 						{
 							Addresses: []v1.EndpointAddress{{IP: "10.0.0.7"}},
-							Ports:     []v1.EndpointPort{{Name: "https-443", Port: 8443, Protocol: v1.ProtocolTCP}},
+							Ports:     []v1.EndpointPort{{Name: "os-https-443", Port: 8443, Protocol: v1.ProtocolTCP}},
 						},
 					}),
 			},
